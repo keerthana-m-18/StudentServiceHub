@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Unified Student Service Hub</title>
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        .module-link {
+            /* Making the link buttons bigger and spaced out */
+            margin: 15px;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            display: inline-block;
+            text-align: center;
+        }
+        #module-selection {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Unified Campus Dashboard</h1>
+    <p>Welcome, Student! All three integrated services are displayed below.</p>
+
+    <div th:if="${statusMessage}" th:class="${statusType == 'error' ? 'alert-error' : 'alert-success'}">
+        <strong th:text="${statusType == 'error' ? 'ERROR:' : 'SUCCESS:'}"></strong>
+        <span th:text="${statusMessage}"></span>
+    </div>
+    <hr>
+
+    <div id="module-selection">
+
+        <a href="/stationery/view" class="button module-link">
+            1. Stationery Ordering
+        </a>
+
+        <a href="/bus/view" class="button module-link">
+            2. Bus Tracking
+        </a>
+
+        <a href="/reminders/view" class="button module-link">
+            3. Academic Reminders
+        </a>
+    </div>
+
+    <hr>
+    <p style="text-align: center;"><a href="/login">Logout</a></p>
+</div> </body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bus Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Bus Admin Panel (Role-Based Access Control)</h1>
+    <p>Logged in as Bus Admin. Access is limited to real-time GPS location updates.</p>
+    <hr>
+
+    <div th:if="${statusMessage}" th:class="${statusType == 'error' ? 'alert-error' : 'alert-success'}">
+        <strong th:text="${statusType == 'error' ? 'ERROR:' : 'SUCCESS:'}"></strong>
+        <span th:text="${statusMessage}"></span>
+    </div>
+
+    <h2>Update Bus Status (Segment Tracking)</h2>
+    <p>This panel allows the admin to update the **last stop the bus reached**.</p>
+
+    <form th:action="@{/admin/bus/update-location}" method="post">
+
+        <label for="busId">Select Bus to Update:</label><br>
+        <select id="busId" name="busId" required>
+            <option th:each="bus : ${allBuses}" th:value="${bus.busId}" th:text="${bus.routeName + ' (Bus ID: ' + bus.busId + ')'}"></option>
+        </select><br><br>
+
+        <label for="currentStopId">Set Current Stop Reached:</label><br>
+        <select id="currentStopId" name="currentStopId" required>
+            <option value="">-- Choose Stop Reached --</option>
+            <option th:each="stop : ${allStops}" th:value="${stop.stopId}" th:text="${stop.stopName + ' (ID: ' + stop.stopId + ')'}"></option>
+        </select><br><br>
+
+        <button type="submit" class="button">Update Bus Status</button>
+    </form>
+
+    <h2 style="margin-top: 40px;">Current Bus Fleet Status</h2>
+    <ul class="module-card">
+        <li th:each="bus : ${allBuses}">
+            Bus <span th:text="${bus.busId}"></span>: <span th:text="${bus.routeName}"></span> | Last Reached Stop: <span th:text="${bus.currentStop != null ? bus.currentStop.stopName : 'N/A'}"></span>
+        </li>
+    </ul>
+    <hr>
+    <a href="/login">Logout</a>
+</div>
+</body>
+</html>

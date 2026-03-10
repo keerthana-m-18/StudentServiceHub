@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bus Selection</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <p><a href="/dashboard">← Back to Dashboard</a></p>
+
+    <div id="bus-module" class="module-card">
+        <h2>2. Bus Pickup Alert System (Live Tracking)</h2>
+        <p>Please select the bus number you wish to track. The system will calculate ETA to your stop (Main Gate).</p>
+
+        <form action="/bus/track" method="GET">
+            <label for="busId">Select Bus:</label><br>
+            <select id="busId" name="busId" required>
+                <option value="">-- Choose Bus --</option>
+
+                <option
+                        th:each="bus : ${allBuses}"
+                        th:value="${bus.busId}"
+                        th:text="${bus.routeName + ' (Bus ID: ' + bus.busId + ')'}">
+                    Route Name (Bus ID: 101)
+                </option>
+            </select>
+
+            <input type="hidden" name="targetStopId" value="3" />
+
+            <button type="submit" class="button">Track ETA</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

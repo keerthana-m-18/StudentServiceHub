@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Stationery Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Stationery Admin Panel (Role-Based Access Control)</h1>
+    <p>Logged in as Stationery Admin. Access is limited to stock and order management.</p>
+    <hr>
+
+    <div th:if="${statusMessage}" th:class="${statusType == 'error' ? 'alert-error' : 'alert-success'}">
+        <strong th:text="${statusType == 'error' ? 'ERROR:' : 'SUCCESS:'}"></strong>
+        <span th:text="${statusMessage}"></span>
+    </div>
+
+    <h2>Pending Orders (Status: PAID)</h2>
+    <div th:if="${pendingOrders.isEmpty()}">
+        <p>No new paid orders are currently pending acceptance.</p>
+    </div>
+
+    <table border="1" th:unless="${pendingOrders.isEmpty()}">
+        <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Total Amount</th>
+            <th>Customer ID</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${pendingOrders}">
+            <td th:text="${order.orderId}">1</td>
+            <td th:text="${order.item.name}">Notebook</td>
+            <td th:text="${order.quantity}">2</td>
+            <td th:text="${order.totalAmount}">100.00</td>
+            <td th:text="${order.student.userId}">101</td>
+            <td>
+                <form th:action="@{/admin/stationery/accept-order/{id}(id=${order.orderId})}" method="post">
+                    <button type="submit" class="button" style="background-color: #28a745;">Accept Order</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2 style="margin-top: 40px;">Stock Management</h2>
+    <form th:action="@{/admin/stationery/update-stock}" method="post">
+        <label for="itemId">Select Item to Update:</label><br>
+        <select id="itemId" name="itemId" required>
+            <option th:each="item : ${allItems}" th:value="${item.itemId}" th:text="${item.name + ' (Current Stock: ' + item.stockQty + ')'}"></option>
+        </select><br><br>
+
+        <label for="newStock">New Quantity:</label>
+        <input type="number" id="newStock" name="newStock" required>
+        <button type="submit" class="button" style="background-color: #17a2b8;">Update Stock</button>
+    </form>
+    <hr>
+    <a href="/login">Logout</a>
+</div>
+</body>
+</html>

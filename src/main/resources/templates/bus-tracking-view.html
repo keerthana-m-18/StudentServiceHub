@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bus Tracking Results</title>
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script>
+        // Simulates periodic ETA updates (e.g., every 15-30 minutes in production)
+        setTimeout(function(){
+            // Only refresh if a bus ID is actively being tracked (Bus ID > 0)
+            const currentBusId = document.getElementById('currentBusId').value;
+            // Target Stop ID is fixed to 3 for Main Gate in this demo structure
+            const targetStopId = 3;
+
+            if (currentBusId > 0) {
+                // Redirects back to the tracking endpoint to fetch updated ETA
+                window.location.href = '/bus/track?busId=' + currentBusId + '&targetStopId=' + targetStopId;
+            }
+        }, 30000); // Refreshes every 30 seconds for a better demo
+    </script>
+</head>
+<body>
+<div class="container">
+    <p><a href="/dashboard">← Back to Dashboard</a></p>
+
+    <div id="bus-module" class="module-card">
+        <h2>2. Bus Pickup Alert System (Live Tracking Proof)</h2>
+        <p>Select a bus number to calculate its ETA to the **Main Gate** stop (simulated student location).</p>
+
+        <form action="/bus/track" method="GET">
+            <label for="busId">Select Bus:</label><br>
+            <select id="busId" name="busId" required>
+                <option value="">-- Choose Bus --</option>
+
+                <option
+                        th:each="bus : ${allBuses}"
+                        th:value="${bus.busId}"
+                        th:text="${bus.routeName + ' (Bus ID: ' + bus.busId + ')'}">
+                    Route Name (Bus ID: 101)
+                </option>
+            </select>
+
+            <input type="hidden" name="targetStopId" value="3" />
+
+            <button type="submit" class="button">Track ETA</button>
+        </form>
+
+        <div th:if="${busId != null and busId > 0}" style="margin-top: 25px;">
+            <hr>
+            <input type="hidden" id="currentBusId" th:value="${busId}">
+
+            <div th:if="${status == 'ARRIVED'}">
+                <h3 style="color: #28a745;">SUCCESS: Bus <span th:text="${busId}"></span> has arrived at <span th:text="${stopName}"></span>!</h3>
+            </div>
+            <div th:if="${status == 'PASSED'}">
+                <h3 style="color: red;">CRITICAL: Bus <span th:text="${busId}"></span> has already passed <span th:text="${stopName}"></span>.</h3>
+            </div>
+
+            <div th:if="${status == 'LIVE'}">
+                <h3>Tracking Bus <span th:text="${busId}"></span> Status: <span style="color: #007bff;">LIVE</span></h3>
+                <p>The bus will reach <span style="color: #007bff; font-weight: bold;" th:text="${stopName}"></span> stop in
+                    <span th:text="${eta}" style="font-weight: bold; color: #28a745; font-size: 1.5rem;"></span> minutes.
+                </p>
+                <p th:if="${eta <= 10}" class="alert-error">
+                    (Proximity Alert Triggered: Email sent to student!)</p>
+            </div>
+
+            <div th:if="${status == 'INACTIVE' or status == 'ERROR'}">
+                <h3 style="color: #dc3545;">Status: Not Active / Data Missing</h3>
+                <p>Bus ID <span th:text="${busId}"></span> data is currently unavailable. Please try again later.</p>
+            </div>
+        </div>
+
+        <div th:unless="${busId != null and busId > 0}">
+            <p style="margin-top: 20px;">Click "Track ETA" to start receiving location updates.</p>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

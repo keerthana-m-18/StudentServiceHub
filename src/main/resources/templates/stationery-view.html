@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Stationery Ordering System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <p><a href="/dashboard">← Back to Dashboard</a></p>
+
+    <div id="stationery-module" class="module-card">
+        <h2>1. Stationery Ordering System (Order Logic Proof)</h2>
+        <p>Demonstrates **Stock Validation Algorithm** and database transaction. Your order will trigger a simulated email notification.</p>
+
+        <form action="/stationery/place-order" method="POST">
+
+            <label for="studentId">Student ID (FK):</label><br>
+            <input type="number" id="studentId" name="studentId" value="101" required><br>
+
+            <label for="itemId">Select Item (ID | Price):</label><br>
+            <select id="itemId" name="itemId" required>
+                <option value="">-- Select an Item --</option>
+
+                <option
+                        th:each="item : ${availableItems}"
+                        th:value="${item.itemId}"
+                        th:text="${item.name + ' (ID: ' + item.itemId + ' | Price: ₹' + item.price + ' | Stock: ' + item.stockQty + ')'}">
+                    Item Name (ID: 101 | Price: ₹50.00)
+                </option>
+            </select><br>
+
+            <label for="quantity">Quantity (Test Stock):</label><br>
+            <input type="number" id="quantity" name="quantity" required><br>
+
+            <label for="paymentMethod">Payment Method:</label><br>
+            <select id="paymentMethod" name="paymentMethod">
+                <option value="UPI">UPI</option>
+                <option value="Razorpay">Razorpay (Report requirement)</option>
+            </select><br><br>
+
+            <button type="submit" class="login-btn">Place Order</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

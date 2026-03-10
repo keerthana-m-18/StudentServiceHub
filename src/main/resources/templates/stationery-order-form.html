@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Place Stationery Order</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Place Stationery Order - Service Test</h2>
+    <p>Triggers the **Stock Validation Algorithm** and database transaction.</p>
+
+    <form action="/stationery/place-order" method="POST">
+
+        <label for="studentId">Student ID (FK):</label><br>
+        <input type="number" id="studentId" name="studentId" value="101" required><br>
+
+        <label for="itemId">Select Item (ID | Price):</label><br>
+        <select id="itemId" name="itemId" required>
+            <option value="">-- Select an Item --</option>
+
+            <option
+                    th:each="item : ${availableItems}"
+                    th:value="${item.itemId}"
+                    th:text="${item.name + ' (ID: ' + item.itemId + ' | Price: ₹' + item.price + ' | Stock: ' + item.stockQty + ')'}">
+            </option>
+        </select><br>
+
+        <label for="quantity">Quantity (Test Stock):</label><br>
+        <input type="number" id="quantity" name="quantity" required><br>
+
+        <label for="paymentMethod">Payment Method:</label><br>
+        <select id="paymentMethod" name="paymentMethod">
+            <option value="UPI">UPI</option>
+        </select><br><br>
+
+        <button type="submit">Place Order</button>
+    </form>
+
+    <p><a href="/dashboard">Back to Dashboard</a></p>
+</div>
+</body>
+</html>
